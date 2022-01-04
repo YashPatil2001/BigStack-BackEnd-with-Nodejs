@@ -24,8 +24,7 @@ const Person = require('../../models/Person');
 //@type    -  POST
 //@route   -  /api/auth/register
 //@desc    -  for registration of users
-//@acess   -  PUBLIC
-
+//@access   -  PUBLIC
 router.post('/register' , (req,res) => {
     Person.findOne( {email: req.body.email})
           .then(person => {
@@ -63,7 +62,6 @@ router.post('/register' , (req,res) => {
 //@route   -  /api/auth/login
 //@desc    -  for login of users
 //@acess   -  PUBLIC
-
 router.post('/login',(req,res) => {
     const email = req.body.email;
     const password = req.body.password;
@@ -78,19 +76,54 @@ router.post('/login',(req,res) => {
               bcrypt.compare(password, person.password )
                     .then( result => {
                         if(result){
-                            return res.json({
-                                msg:'user logged in sucesfully',
-                                user:person
-                            });
-                        }
+                            // return res.json({
+                            //     msg:'user logged in sucesfully',
+                            //     user:person
+                            // });
+                            //TODO:user payload and create token for user
+                            const payload = {
+                                id:person.id,
+                                name:person.name,
+                                email:person.email
+                            }
+                            jsonwt.sign( payload ,
+                                         key ,
+                                        { expiresIn: 24 * 3600},
+                                        (err,token) => {
+                                            if(err) throw err;
+                                           return res.json({
+                                                sucsess:true,
+                                                token : 'Bearer ' + token
+                                            })
+                                        });
+                        }else{
                         return res.status(400).json({
                             msg:'incorrect password'
                         });
+                    }
                     })
                     .catch(err => console.log(err));      
 
           })
           .catch(err => console.log(err));
+})
+
+
+//@type    -  POST
+//@route   -  /api/auth/profile
+//@desc    -  for serving user profile
+//@access   -  PRIVATE
+
+router.get('/profile' ,passport.authenticate('jwt',{session:false}), 
+(req,res) => {
+    const user = req.user;
+    res.json({
+       id : user.id,
+       name: user.name,
+       email:user.email,
+       profilepic:user.profilepic
+    });
+    console.log(req.user);
 })
 
 module.exports = router;
