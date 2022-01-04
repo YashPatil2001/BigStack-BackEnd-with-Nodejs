@@ -30,7 +30,7 @@ router.post('/register' , (req,res) => {
           .then(person => {
               if(person){
                   return res.status(400).json({
-                      emailError : 'Email already registered in out system'
+                      emailError : 'Email already registered in our system'
                   });
               }else{
                   const newPerson = new Person({

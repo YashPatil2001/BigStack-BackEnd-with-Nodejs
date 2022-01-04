@@ -53,7 +53,7 @@ app.use('/api/auth',auth);
 //@route   -  /api/profile
 //@desc    -  to user profile
 //@access  -  PRIVATE
-app.use('/api',profile);
+app.use('/api/profile',profile);
 
 
 //@type    -  GET
