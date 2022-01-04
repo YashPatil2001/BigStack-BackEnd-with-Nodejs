@@ -1,7 +1,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
-
+const passport = require('passport');
 
 var app = express();
 const port = process.env.PORT || 3000;
@@ -9,6 +9,10 @@ const port = process.env.PORT || 3000;
 //middleware for body-parser
 app.use(bodyParser.urlencoded({extended:true}));
 app.use(bodyParser.json());
+app.use(passport.initialize());
+
+//config for jwt-strategy
+require('./strategies/jsonWtStrategy')(passport);
 
 
 //bring all routes
@@ -19,6 +23,7 @@ const question = require('./routes/api/questions');
 //mongodb configuration
 
 const { mongourl } = require('./setup/myUrl');
+
 
 // console.log('mongourl : ',mongourl);
 
