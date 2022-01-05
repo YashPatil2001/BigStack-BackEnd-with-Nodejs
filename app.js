@@ -60,6 +60,6 @@ app.use('/api/profile',profile);
 //@route   -  /api/question
 //@desc    -  to question
 //@access  -  PRIVATE
-app.use('/api',question);
+app.use('/api/questions',question);
 
 app.listen(port , () => console.log(`app is running at port ${port}`));
